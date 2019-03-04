@@ -1,0 +1,35 @@
+﻿<Window x:Class="DrawGestures.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DrawGestures"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Closing="WindowClosing">
+    <Grid x:Name="mainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2.5*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <InkCanvas x:Name="inkCanvas" Grid.ColumnSpan="3" MouseMove="inkCanvasMouseMove" PreviewMouseLeftButtonDown="inkCanvasPreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="inkCanvasPreviewMouseLeftButtonUp" />
+        <Button x:Name="buttonReset" Content="Очистить" Grid.Column="2" Grid.Row="1" FontSize="25" Command="{Binding ResetCommand}"/>
+        <Button x:Name="buttonSave" Content="Сохранить" Grid.Column="1" Grid.Row="1" FontSize="25"  Command="{Binding SaveCommand}"/>
+        <ComboBox x:Name="comboBox" Grid.Column="0" Grid.Row="1" IsReadOnly="True" SelectionChanged="ComboBoxSelected" FontSize="25" Text="Выберите фигуру">
+            <ComboBoxItem Content="AcceptEventAction" Name="figure0"></ComboBoxItem>
+            <ComboBoxItem Content="AcceptTimeEventAction" Name="figure1"></ComboBoxItem>
+            <ComboBoxItem Content="ActivityPartition" Name="figure2"></ComboBoxItem>
+            <ComboBoxItem Content="Comment" Name="figure3"></ComboBoxItem>
+            <ComboBoxItem Content="DecisionNode" Name="figure4"></ComboBoxItem>
+            <ComboBoxItem Content="Diagram" Name="figure5"></ComboBoxItem>
+            <ComboBoxItem Content="InitialNode" Name="figure6"></ComboBoxItem>
+            <ComboBoxItem Content="InputPin" Name="figure7"></ComboBoxItem>
+            <ComboBoxItem Content="SendSignalAction" Name="figure8"></ComboBoxItem>
+        </ComboBox>
+
+    </Grid>
+</Window>
