@@ -101,7 +101,7 @@ namespace RecognitionApp
 
         private void AddedPointIdealGestures()
         {
-            var count = IdealGestures[MaxCountPointsIndexGesture()].Points.Count;
+            var count = IdealGestures[MaxCountPointsIndexGesture()].Points.Count * 2;
             for (int i = 0; i < IdealGestures.Count; i++)
             {
                 if (IdealGestures[i].Points.Count() < count)
