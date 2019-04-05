@@ -28,7 +28,7 @@ namespace DrawGestures
         public MainViewModel(MainWindow mainWindow)
         {
             window = mainWindow;
-            pathToSave = @"C:\Users\ACER\source\repos\RecognitionApp\RecognitionApp\MultiGestures.xml";
+            pathToSave = @"MultiGestures.xml";
             index = -1;
             index = -1;
             gestures = new GesturesCollection();
