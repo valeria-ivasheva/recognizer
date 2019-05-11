@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml.Serialization;
 using RecognitionApp;
 
@@ -18,9 +19,10 @@ namespace TestRecMouse
             var falsePositive = new int[9];
             var error = 0;
             string path = @"C:\Users\ACER\source\repos\RecognitionApp\RecognitionApp\UserGestures.xml";
-            var PGC = new PerfectGesturesClass(path);
+            string pathNew = "UserMultiStrokeGestures.xml";
+            var PGC = new PerfectGesturesClass(pathNew);
             XmlSerializer serializer = new XmlSerializer(typeof(GesturesCollection));
-            StreamReader reader = new StreamReader(path);
+            StreamReader reader = new StreamReader(pathNew);
             var gesturesCollection = (GesturesCollection)serializer.Deserialize(reader);
             reader.Close();
             Console.Write("Выберите номер тестируемого алгоритма:\n" +
@@ -34,7 +36,15 @@ namespace TestRecMouse
             {
                 for (int j = 0; j < gesturesCollection.Gesture[i].UserPath.Count(); j++)
                 {
-                    var points = PGC.AdopterPoints(gesturesCollection.Gesture[i].UserPath[j].Path);
+                    var result = new List<Point>();
+                    var strSep = new string[] { " | " };
+                    var strArrayStroke = gesturesCollection.Gesture[i].UserPath[j].Path.Split(strSep, StringSplitOptions.RemoveEmptyEntries);
+                    var points = new List<Point>();
+                    foreach (var str in strArrayStroke)
+                    {
+                        var pointsTemp = PGC.AdopterPoints(str);
+                        points = points.Concat(pointsTemp).ToList();
+                    }                    
                     var rec = new RecognitionMouse(points);
                     int index = -1;
                     switch (numberOfAlgorithm)
