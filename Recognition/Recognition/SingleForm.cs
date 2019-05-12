@@ -54,23 +54,37 @@ namespace Recognition
                 var pointsStroke = points[i];
                 var listX = pointsStroke.ConvertAll(new Converter<Point, double>((Point point) => point.X));
                 var listY = pointsStroke.ConvertAll(new Converter<Point, double>((Point point) => point.Y));
-                var newListY = RevertMax(listY, width);
-                var newListX = RevertMax(listX, length);
-                if (width > length)
+                var newListY = new List<double>();
+                var newListX = new List<double>();
+                //var newListY = RevertMax(listY, width);
+                //var newListX = RevertMax(listX, length);
+                if (width < length)
                 {
-                    newListX = RevertMin(listX, listY, newListY);
-                    //listY = RevertMin(listY, length / width);
-                    //listX = RevertMax(listX, length);
+                    newListX = RevertMax(listX, length);
+                    newListY = RevertMax(listY, width);
+                    newListY = RevertMin(newListY, length / width);
                 }
                 else
                 {
-                    newListY = RevertMin(listY, listX, newListX);
-                    //listX = RevertMax(listX, length);
-                    //listX = RevertMin(listX, width / length);
-                    //listY = RevertMax(listY, width);
-                }
-                listX = newListX;
-                listY = newListY;
+                    newListX = RevertMax(listX, length);
+                    newListX = RevertMin(newListX, width / length);
+                    newListY = RevertMax(listY, width);
+                }                
+                //if (width > length)
+                //{
+                //    newListX = RevertMin(listX, listY, newListY);
+                //    //listY = RevertMin(listY, length / width);
+                //    //listX = RevertMax(listX, length);
+                //}
+                //else
+                //{
+                //    newListY = RevertMin(listY, listX, newListX);
+                //    //listX = RevertMax(listX, length);
+                //    //listX = RevertMin(listX, width / length);
+                //    //listY = RevertMax(listY, width);
+                //}
+                //listX = newListX;
+                //listY = newListY;
                 var tempStroke = new List<Point>();
                 for (int j = 0; j < pointsStroke.Count; j++)
                 {
@@ -83,23 +97,41 @@ namespace Recognition
 
         private static List<double> RevertMax(List<double> list, double max)
         {
-            var result = new List<double>();
             for (int i = 0; i < list.Count; i++)
             {
-                result.Add(list[i] * 100 / max);
+                list[i] = list[i] * 100 / max;
             }
-            return result;
+            return list;
         }
 
-        private static List<double> RevertMin(List<double> listToRemake, List<double> oldListToSee, List<double> newListToSee)
+        private static List<double> RevertMin(List<double> list, double coefficient)
         {
-            var result = new List<double>();
-            for (int i = 0; i < listToRemake.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
-                var temp = oldListToSee[i] == 0 ? 0 : listToRemake[i] * newListToSee[i] / oldListToSee[i];
-                result.Add(temp);
+                list[i] = list[i] / coefficient;
             }
-            return result;
+            return list;
         }
+
+        //private static List<double> RevertMax(List<double> list, double max)
+        //{
+        //    var result = new List<double>();
+        //    for (int i = 0; i < list.Count; i++)
+        //    {
+        //        result.Add(list[i] * 100 / max);
+        //    }
+        //    return result;
+        //}
+
+        //private static List<double> RevertMin(List<double> listToRemake, List<double> oldListToSee, List<double> newListToSee)
+        //{
+        //    var result = new List<double>();
+        //    for (int i = 0; i < listToRemake.Count; i++)
+        //    {
+        //        var temp = oldListToSee[i] == 0 ? 0 : listToRemake[i] * newListToSee[i] / oldListToSee[i];
+        //        result.Add(temp);
+        //    }
+        //    return result;
+        //}
     }
 }

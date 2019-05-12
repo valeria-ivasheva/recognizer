@@ -51,34 +51,8 @@ namespace Recognition.Recognizers
 
         private List<Point> KeyForGesture(List<Point> points)
         {
-            var result = new List<Point>();
-            var lastCharPnt = points[0];
-            result.Add(lastCharPnt);
-            double minDist = 10;
-            for (int i = 1; i < points.Count - 1; i++)
-            {
-                var angle = ChangeAngle(lastCharPnt, points[i], points[i + 1]);
-                bool cond = (angle > Math.PI / 9) && Distance.EuclideanDistance(lastCharPnt, points[i]) > minDist;
-                if (cond)
-                {
-                    lastCharPnt = points[i];
-                    result.Add(lastCharPnt);
-                }
-            }
-            result.Add(points.Last());
-            if (result.Count == countResult)
-            {
-                return result;
-            }
-            var count = Math.Abs(result.Count - countResult);
-            if (result.Count < countResult)
-            {
-                result = AddPoint(count, result);
-            }
-            else
-            {
-                result = RemovePoint(count, result);
-            }
+            var identifyCharacteristicsPoints = new IdentifyCharacteristicsPoints(points, countResult);
+            var result = identifyCharacteristicsPoints.GetIdentifyCharacteristicsPoints();
             return result;
         }
 
@@ -106,33 +80,7 @@ namespace Recognition.Recognizers
                 }
             }
             return index;
-        }
-        
-        private List<Point> RemovePoint(int count, List<Point> points)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                var delIndex = FindIndexMin(points) + 1;
-                points.RemoveAt(delIndex);
-            }
-            return points;
-        }
-
-        private int FindIndexMin(List<Point> points)
-        {
-            var indexResult = 0;
-            double minLength = int.MaxValue;
-            for (int i = 0; i < points.Count - 2; i++)
-            {
-                var tempLength = Distance.EuclideanDistance(points[i], points[i + 2]);
-                if (tempLength < minLength)
-                {
-                    minLength = tempLength;
-                    indexResult = i;
-                }
-            }
-            return indexResult;
-        }
+        }        
 
         private List<Point> AddPoint(int count, List<Point> points)
         {
@@ -143,17 +91,6 @@ namespace Recognition.Recognizers
                 points.Insert(indexSegment + 1, newPoint);
             }
             return points;
-        }
-
-        private double ChangeAngle(Point a, Point b, Point c)
-        {
-            double xSegmentAB = a.X - b.X;
-            double ySegmentAB = a.Y - b.Y;
-            double xSegmentBC = b.X - c.X;
-            double ySegmentBC = b.Y - c.Y;
-            double lengthAB = Distance.EuclideanDistance(a, b);
-            double lengthBC = Distance.EuclideanDistance(b, c);
-            return Math.Acos(Math.Abs(xSegmentAB * xSegmentBC + ySegmentAB * ySegmentBC) / (lengthAB * lengthBC));
         }
 
         private int FindIndexMax(List<Point> points)
