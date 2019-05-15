@@ -58,7 +58,10 @@
     <Compile Include="Distance.cs" />
     <Compile Include="IdentifyCharacteristicPoints.cs" />
     <Compile Include="RecognitionMouse.cs" />
+    <Compile Include="Recognizers\Algorithms\Hungarian.cs" />
     <Compile Include="Recognizers\CharacteristicsPointsRecognizer.cs" />
+    <Compile Include="Recognizers\HungarianRecognizer.cs" />
+    <Compile Include="Recognizers\MultistrokeRecognizer.cs" />
     <Compile Include="SingleForm.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

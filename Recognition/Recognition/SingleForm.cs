@@ -62,13 +62,19 @@ namespace Recognition
                 {
                     newListX = RevertMax(listX, length);
                     newListY = RevertMax(listY, width);
-                    newListY = RevertMin(newListY, length / width);
+                    if (width != 0)
+                    {
+                        newListY = RevertMin(newListY, length / width);
+                    }
                 }
                 else
                 {
                     newListX = RevertMax(listX, length);
-                    newListX = RevertMin(newListX, width / length);
                     newListY = RevertMax(listY, width);
+                    if (length != 0)
+                    {
+                        newListX = RevertMin(newListX, width / length);
+                    }
                 }                
                 //if (width > length)
                 //{
@@ -97,6 +103,10 @@ namespace Recognition
 
         private static List<double> RevertMax(List<double> list, double max)
         {
+            if (max == 0)
+            {
+                return list;
+            }
             for (int i = 0; i < list.Count; i++)
             {
                 list[i] = list[i] * 100 / max;
