@@ -9,7 +9,7 @@ namespace Recognition.Recognizers
 {
     public class HungarianRecognizer : IRecognizer
     {
-        private int countPoints = 30;
+        private int countPoints = 64;
         private PerfectGesturesClass perfectGestures;
         private List<List<Point>> keyIdealGestures;
         private List<Point> keyUsersGestures;
@@ -56,7 +56,19 @@ namespace Recognition.Recognizers
                     nowPoints.Add(stroke);
                 }
                 var newPoints = new List<Point>();
-                newPoints = FindNeedPoints(nowPoints);
+                newPoints = SingleForm.TranslateGesture(nowPoints, countPoints);
+                //newPoints = FindNeedPoints(nowPoints);
+                if (newPoints.Count != countPoints)
+                {
+                    if (newPoints.Count > countPoints)
+                    {
+                        newPoints = RemovePoint(newPoints, newPoints.Count - countPoints);
+                    }
+                    else
+                    {
+                        newPoints = AddPoint(newPoints, countPoints - newPoints.Count);
+                    }
+                }
                 keyIdealGestures.Add(newPoints);
             }
         }
@@ -103,7 +115,7 @@ namespace Recognition.Recognizers
                 return result;
             }
             if (result.Count > countPoints)
-            {
+            {   
                 result = RemovePoint(result, result.Count - countPoints);
             }
             else
@@ -137,7 +149,19 @@ namespace Recognition.Recognizers
             }
             //var epsilon = PathLength(nowPoints) / (countPoints - 1);
             var newPoints = new List<Point>();
-            newPoints = FindNeedPoints(nowPoints);
+            newPoints = SingleForm.TranslateGesture(nowPoints, countPoints);
+            //newPoints = FindNeedPoints(nowPoints);
+            if (newPoints.Count != countPoints)
+            {
+                if (newPoints.Count > countPoints)
+                {
+                    newPoints = RemovePoint(newPoints, newPoints.Count - countPoints);
+                }
+                else
+                {
+                    newPoints = AddPoint(newPoints, countPoints - newPoints.Count);
+                }
+            }
             keyUsersGestures = newPoints;
         }
         

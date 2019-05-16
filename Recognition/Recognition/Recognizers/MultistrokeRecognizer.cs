@@ -22,8 +22,8 @@ namespace Recognition.Recognizers
 
         public double GetDistance(object gestureKey)
         {
-            var distOne = CloudDistance(keyUsersGestures, keyIdealGestures[(int)gestureKey]);
-            var distTwo = CloudDistance(keyIdealGestures[(int)gestureKey], keyUsersGestures);
+            var distOne = DistanceBetweenGestures(keyUsersGestures, keyIdealGestures[(int)gestureKey]);
+            var distTwo = DistanceBetweenGestures(keyIdealGestures[(int)gestureKey], keyUsersGestures);
             var dist = distOne > distTwo ? distTwo : distOne;
             return dist;
         }
@@ -116,9 +116,9 @@ namespace Recognition.Recognizers
             var nowPoints = new List<List<Point>>();
             foreach (var stroke in points)
             {
-                //var charPoints = new IdentifyCharacteristicsPoints(stroke);
-                //nowPoints.Add(charPoints.GetIdentifyCharacteristicsPoints());
-                nowPoints.Add(stroke);
+                var charPoints = new IdentifyCharacteristicsPoints(stroke);
+                nowPoints.Add(charPoints.GetIdentifyCharacteristicsPoints());
+                //nowPoints.Add(stroke);
             }
             //var epsilon = PathLength(nowPoints) / (countPoints - 1);
             var newPoints = new List<Point>();
@@ -126,7 +126,7 @@ namespace Recognition.Recognizers
             keyUsersGestures = newPoints;
         }
 
-        private double CloudDistance(List<Point> pointsOne, List<Point> pointsTwo)
+        private double DistanceBetweenGestures(List<Point> pointsOne, List<Point> pointsTwo)
         {
             double result = 0;
             for (int i  = 0; i < pointsOne.Count; i++)

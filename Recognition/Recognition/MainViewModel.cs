@@ -25,13 +25,13 @@ namespace Recognition
         private MainWindow window;
         private string thisIsGesture;
         private bool isDrawing = false;
-        private IRecognizer recognizer = new Recognizers.MultistrokeRecognizer();
+        private IRecognizer recognizer = new Recognizers.HungarianRecognizer();
         private RecognitionMouse recognition;
 
         public MainViewModel(MainWindow window)
         {
             this.window = window;
-            string path = "IdealGestures.xml";//"MultistrokeIdealGestures.xml";
+            string path = "MultistrokeIdealGestures.xml";// "IdealGestures.xml";//"MultistrokeIdealGestures.xml";
             recognition = new RecognitionMouse(path, recognizer);               
         }
 
