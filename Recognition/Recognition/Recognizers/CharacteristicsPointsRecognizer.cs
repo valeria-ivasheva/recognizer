@@ -59,7 +59,9 @@ namespace Recognition.Recognizers
         private List<Point> GetOnestrokeGesture(List<List<Point>> gesture)
         {
             var result = new List<Point>();
-            gesture = SingleForm.FitIntoSquare(gesture);
+            //gesture = SingleForm.FitIntoSquare(gesture);
+            gesture = SingleForm.ChangeCoord(gesture, out double length, out double width);
+            gesture = SingleForm.TranslateToCentroid(gesture);
             foreach (var strokeGesture in gesture)
             {
                 result = result.Concat(strokeGesture).ToList();

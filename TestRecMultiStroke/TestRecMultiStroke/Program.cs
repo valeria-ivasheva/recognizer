@@ -15,7 +15,7 @@ namespace TestRecMultiStroke
             var falseNegative = new int[19];
             var falsePositive = new int[19];
             var error = 0;
-            string path = "UserMultiStrokeGestures.xml";//"UserGestures.xml";//"multistrokeGestures.xml";///@"UserMultiStrokeGestures.xml";
+            string path = "UserMultiStrokeGestures.xml";//"UserGestures.xml";//"Multistroke.xml";///@"UserMultiStrokeGestures.xml";
             XmlSerializer serializer = new XmlSerializer(typeof(GesturesCollection));
             StreamReader reader = new StreamReader(path);
             var gesturesCollection = (GesturesCollection)serializer.Deserialize(reader);

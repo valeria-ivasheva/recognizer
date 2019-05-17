@@ -19,7 +19,7 @@ namespace Recognition
         /// <param name="length"> Длина прямоугольника, описанного около фигуры</param>
         /// <param name="width"> Ширина прямоугольника, описанного около фигуры</param>
         /// <returns> Полученный список перемещенных точек</returns>
-        public static List<List<Point>> ChangeCoord(List<List<Point>> points)//, out double length, out double width)
+        public static List<List<Point>> ChangeCoord(List<List<Point>> points, out double length, out double width)
         {
             var temp = points.SelectMany(array => array).ToList();
             var listX = temp.ConvertAll(new Converter<Point, double>((Point point) => point.X));
@@ -28,14 +28,14 @@ namespace Recognition
             var minX = listX.Min();
             var maxY = listY.Max();
             var minY = listY.Min();
-            var length = maxX - minX;
-            var width = maxY - minY;
+            length = maxX - minX;
+            width = maxY - minY;
             var scale = Math.Min(length, width);
             for (int i = 0; i < points.Count; i++)
                 for (int j = 0; j < points[i].Count; j++)
                 {
                     {
-                        points[i][j] = new Point((points[i][j].X - minX) / scale, (points[i][j].Y - minY) / scale);
+                        points[i][j] = new Point((points[i][j].X - minX), (points[i][j].Y - minY));
                     }
                 }
             return points;
@@ -49,8 +49,7 @@ namespace Recognition
         public static List<List<Point>> FitIntoSquare(List<List<Point>> points)
         {
             var result = new List<List<Point>>();
-            points = ChangeCoord(points);//, out double length, out double width);
-            double width = 1, length = 1;
+            points = ChangeCoord(points, out double length, out double width);            
             for (int i = 0; i < points.Count; i++)
             {
                 var pointsStroke = points[i];
@@ -127,13 +126,19 @@ namespace Recognition
 
         public static List<Point> TranslateGesture(List<List<Point>> points, int count)
         {
-            points = ChangeCoord(points);
+            points = ChangeCoord(points, out double length, out double width);
             points = TranslateTo(points, Centroid(points));
             var result = Resample(points, count);
             return result;
         }
+
+        public static List<List<Point>> TranslateToCentroid(List<List<Point>> points)
+        {
+            points = TranslateTo(points, Centroid(points));
+            return points;
+        }
              
-        private static List<List<Point>> TranslateTo(List<List<Point>> points, Point p)
+        public static List<List<Point>> TranslateTo(List<List<Point>> points, Point p)
         {
             List<List<Point>> newPoints = new List<List<Point>>();
             for (int i = 0; i < points.Count; i++)
@@ -146,6 +151,14 @@ namespace Recognition
                 newPoints.Add(tempList);
             }
             return newPoints;
+        }
+
+        public static List<Point> TranslatePoints(List<List<Point>> points, int count)
+        {
+            points = ChangeCoord(points, out double length, out double width);
+            points = RotateByRadians(points);
+            var result = Resample(points, count);
+            return result;
         }
 
         /// <summary>
@@ -173,7 +186,7 @@ namespace Recognition
         /// <param name="points"></param>
         /// <param name="n"></param>
         /// <returns></returns>
-        private static List<Point> Resample(List<List<Point>> points, int n)
+        public static List<Point> Resample(List<List<Point>> points, int n)
         {
             List<Point> newPoints = new List<Point>();
             newPoints.Add(new Point(points[0][0].X, points[0][0].Y));
@@ -211,8 +224,114 @@ namespace Recognition
                 }
             }
             var temp = points[points.Count - 1].Count - 1;
+            if (newPoints.Count != n)
+            {
+                if (newPoints.Count > n)
+                {
+                    newPoints = RemovePoint(newPoints, newPoints.Count - n);
+                }
+                else
+                {
+                    newPoints = AddPoint(newPoints, n - newPoints.Count);
+                }
+            }
             if (numPoints == n - 1) // sometimes we fall a rounding-error short of adding the last point, so add it if so
                 newPoints.Add(new Point(points[points.Count - 1][temp].X, points[points.Count - 1][temp].Y));
+            return newPoints;
+        }
+
+        private static int FindIndexMax(List<Point> result)
+        {
+            var indexResult = 0;
+            double maxLength = 0;
+            var pointsGesture = result;
+            for (int i = 0; i < pointsGesture.Count - 1; i++)
+            {
+                var tempLength = Distance.EuclideanDistance(pointsGesture[i], pointsGesture[i + 1]);
+                if (tempLength > maxLength)
+                {
+                    maxLength = tempLength;
+                    indexResult = i;
+                }
+            }
+            return indexResult;
+        }
+
+        private static List<Point> AddPoint(List<Point> result, int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var indexSegment = FindIndexMax(result);
+                var newPoint = new Point((result[indexSegment].X + result[indexSegment + 1].X) / 2, (result[indexSegment].Y + result[indexSegment + 1].Y) / 2);
+                result.Insert(indexSegment + 1, newPoint);
+            }
+            return result;
+        }
+
+        private static int FindIndexMin(List<Point> result)
+        {
+            var indexResult = 0;
+            double minLength = int.MaxValue;
+            for (int i = 0; i < result.Count - 2; i++)
+            {
+                var tempLength = Distance.EuclideanDistance(result[i], result[i + 2]);
+                if (tempLength < minLength)
+                {
+                    minLength = tempLength;
+                    indexResult = i;
+                }
+            }
+            return indexResult;
+        }
+
+        private static List<Point> RemovePoint(List<Point> result, int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var delIndex = FindIndexMin(result) + 1;
+                result.RemoveAt(delIndex);
+            }
+            return result;
+        }
+
+        public static List<List<Point>> RotateByRadians(List<List<Point>> points)
+        {
+            List<List<Point>> newPoints = new List<List<Point>>();
+            Point c = Centroid(points);
+            double radians = 0.0;
+            if (points[0][0].X != c.X)
+            {
+                radians = Math.Atan2(c.Y - points[0][0].Y, c.X - points[0][0].X);
+            }
+            else // pure vertical movement
+            {
+                if (c.Y < points[0][0].Y)
+                    radians = -Math.PI / 2.0; // -90 degrees is straight up
+                else if (c.Y > points[0][0].Y)
+                    radians = Math.PI / 2.0; // 90 degrees is straight down
+            }
+            double cos = Math.Cos(radians);
+            double sin = Math.Sin(radians);
+
+            double cx = c.X;
+            double cy = c.Y;
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                var temp = new List<Point>();
+                for (int j = 0; j < points[i].Count; j++)
+                {
+                    Point p = points[i][j];
+
+                    double dx = p.X - cx;
+                    double dy = p.Y - cy;
+                    
+                    var X = dx * cos - dy * sin + cx;
+                    var Y = dx * sin + dy * cos + cy;
+                    temp.Add(new Point(X, Y));
+                }
+                newPoints.Add(temp);
+            }
             return newPoints;
         }
 

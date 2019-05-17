@@ -31,7 +31,7 @@ namespace Recognition
         public MainViewModel(MainWindow window)
         {
             this.window = window;
-            string path = "MultistrokeIdealGestures.xml";// "IdealGestures.xml";//"MultistrokeIdealGestures.xml";
+            string path = "IdealGestures.xml";// "IdealGestures.xml";//"MultistrokeIdealGestures.xml";
             recognition = new RecognitionMouse(path, recognizer);               
         }
 
