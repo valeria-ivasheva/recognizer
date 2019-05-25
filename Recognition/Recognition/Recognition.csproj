@@ -59,6 +59,7 @@
     <Compile Include="IdentifyCharacteristicPoints.cs" />
     <Compile Include="RecognitionMouse.cs" />
     <Compile Include="Recognizers\Algorithms\Hungarian.cs" />
+    <Compile Include="Recognizers\CellsRecognizer.cs" />
     <Compile Include="Recognizers\CharacteristicsPointsRecognizer.cs" />
     <Compile Include="Recognizers\HungarianRecognizer.cs" />
     <Compile Include="Recognizers\MultistrokeRecognizer.cs" />

@@ -110,7 +110,7 @@ namespace Recognition
             }
             for (int i = 0; i < list.Count; i++)
             {
-                list[i] = list[i] * 100 / max;
+                list[i] = list[i] * 80 / max;
             }
             return list;
         }

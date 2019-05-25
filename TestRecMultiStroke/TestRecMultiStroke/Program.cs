@@ -58,7 +58,8 @@ namespace TestRecMultiStroke
                             }
                         case 4:
                             {
-                                
+                                var rec = new RecognitionMouse(path, new Recognition.Recognizers.CellsRecognizer());
+                                index = rec.RecognizeGestures(points);
                                 break;
                             }
                     }
@@ -79,50 +80,6 @@ namespace TestRecMultiStroke
                             falsePositive[index]++;
                         }
                     }
-
-                    //switch (numberOfAlgorithm)
-                    //{
-                    //    case 1:
-                    //        {
-                    //            points = rec.DouglasPeucker();
-                    //            index = rec.WhatIsItIndex();
-                    //            break;
-                    //        }
-                    //    case 2:
-                    //        {
-                    //            points = rec.IdentifyChar();
-                    //            index = rec.WhatIsItIndex();
-                    //            break;
-                    //        }
-                    //    case 3:
-                    //        {
-                    //            index = rec.WhatIsItWithKey();
-                    //            break;
-                    //        }
-                    //    case 4:
-                    //        {
-                    //            index = rec.WhatIsItWithIdealKey();
-                    //            break;
-                    //        }
-                    //}
-                    //    if (index == -1)
-                    //    {
-                    //        error++;
-                    //    }
-                    //    else
-                    //    {
-                    //        if (index == i)
-                    //        {
-                    //            truePositive[i]++;
-                    //        }
-                    //        else
-                    //        {
-                    //            falseNegative[i]++;
-                    //            falsePositive[index]++;
-                    //        }
-                    //    }
-                    //}
-                    //Console.WriteLine(i);
                 }
                 Console.WriteLine(i);
             }
