@@ -11,11 +11,12 @@ namespace TestRecMultiStroke
     {
         static void Main(string[] args)
         {
-            var truePositive = new int[19];
-            var falseNegative = new int[19];
-            var falsePositive = new int[19];
+            var truePositive = new int[16];
+            var falseNegative = new int[16];
+            var falsePositive = new int[16];
             var error = 0;
-            string path = "UserMultiStrokeGestures.xml";//"UserGestures.xml";//"Multistroke.xml";///@"UserMultiStrokeGestures.xml";
+            string pathD = "IdealGestures.xml";//"UserGestures.xml";//"Multistroke.xml";///@"UserMultiStrokeGestures.xml";
+            string path = "UserMultiStrokeGestures.xml";
             XmlSerializer serializer = new XmlSerializer(typeof(GesturesCollection));
             StreamReader reader = new StreamReader(path);
             var gesturesCollection = (GesturesCollection)serializer.Deserialize(reader);
@@ -24,8 +25,9 @@ namespace TestRecMultiStroke
             Console.Write("Выберите номер тестируемого алгоритма:\n" +
                 "1)Направление + характеристические точки\n" +
                 "2)Хаусдорф, среднее значение и облако точек\n" +
-                "3)Алгоритм ключа\n" +
-                "4)Алгоритм характеристические точки + ключ\n");
+                "3)Венгерский алгоритм\n" +
+                "4)Алгоритм ячеек\n"  +
+                "5)Жадный алгоритм\n");
             var numberOfAlgorithm = Convert.ToInt32(Console.ReadLine());
             gesturesCollection.Gesture[0].UserPath.Count();
             for (int i = 0; i < gesturesCollection.Gesture.Count(); i++)
@@ -39,26 +41,32 @@ namespace TestRecMultiStroke
                         case 1:
                             {
                                 //recognizer = new Recognition.Recognizers.CharacteristicsPointsRecognizer();
-                                var rec = new RecognitionMouse(path, new Recognition.Recognizers.CharacteristicsPointsRecognizer());
+                                var rec = new RecognitionMouse(pathD, new Recognition.Recognizers.CharacteristicsPointsRecognizer());
                                 index = rec.RecognizeGestures(points);
                                 break;
                             }
                         case 2:
                             {
                                 //recognizer = new Recognition.Recognizers.MultistrokeRecognizer();
-                                var rec = new RecognitionMouse(path, new Recognition.Recognizers.MultistrokeRecognizer());
+                                var rec = new RecognitionMouse(pathD, new Recognition.Recognizers.MultistrokeRecognizer());
                                 index = rec.RecognizeGestures(points);
                                 break;
                             }
                         case 3:
                             {
-                                var rec = new RecognitionMouse(path, new Recognition.Recognizers.HungarianRecognizer());
+                                var rec = new RecognitionMouse(pathD, new Recognition.Recognizers.HungarianRecognizer());
                                 index = rec.RecognizeGestures(points);
                                 break;
                             }
                         case 4:
                             {
-                                var rec = new RecognitionMouse(path, new Recognition.Recognizers.CellsRecognizer());
+                                var rec = new RecognitionMouse(pathD, new Recognition.Recognizers.CellsRecognizer());
+                                index = rec.RecognizeGestures(points);
+                                break;
+                            }
+                        case 5:
+                            {
+                                var rec = new RecognitionMouse(pathD, new Recognition.Recognizers.GreedyAlgRecognizer());
                                 index = rec.RecognizeGestures(points);
                                 break;
                             }
